@@ -3,6 +3,7 @@ from django.apps import apps
 import csv
 from django.contrib import messages
 from django.db.utils import DataError
+from ...utils import check_csv_file
 
 class Command(BaseCommand):
     help = "Import CSV data into selected model"
@@ -16,28 +17,10 @@ class Command(BaseCommand):
         model_name = kwargs["model_name"]
 
         # Locate model dynamically
-        model = None
-        for app_config in apps.get_app_configs():
-            try:
-                model = app_config.get_model(model_name)
-                break
-            except LookupError:
-                continue
-
-        if model is None:
-            self.stdout.write(self.style.ERROR(f"Model '{model_name}' not found."))
-            return
-        
-        model_field=[field.name for field in model._meta.fields if field.name!="id"]
-
-
-
+        model=check_csv_file(filepath,model_name)
         # Read CSV
-        with open(filepath, "r") as file:
-            reader = csv.DictReader(file)
-            file_header=reader.fieldnames
-            if model_field!=file_header:
-                raise DataError("Field names are not matching")
+        with open(filepath,'r') as file:
+            reader=csv.DictReader(file)
             for row in reader:
                 model.objects.create(**row)
 
