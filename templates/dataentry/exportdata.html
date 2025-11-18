@@ -1,31 +1,15 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
-    <!-- jQuery library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <script src="{% static 'js/custom.js' %}"></script>
-  <title>Test</title>
-</head>
-<body>
-<div class="container">
-    <h2 class="text-center">Export Data Page</h2>
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5 alert alert-success shadow" style="max-width:600px;margin:auto;">
+    <h2 class="text-center mb-4">Export Data to Database Table</h2>
     <form action="{% url 'exportdata' %}" method="post" style="max-width:600px;margin:auto;" enctype="multipart/form-data">
         {% csrf_token %}
         {% comment %} <div class="form-group">
             <label for="filepath">Upload CSV File</label>
             <input type="file" name="filepath" class="form-control"/>
         </div> {% endcomment %}
-        <div class="form-group">
-            <label for="model_name">Select Database Table</label>
+        <div class="mb-4">  <!-- Changed from mb-3 to mb-4 for more spacing -->
+            <label for="model_name" class="form-label">Select Database Table</label>
             <select name="model_name" class="form-control">
                 <option value="" disabled selected>Select</option>
                 {% for model in all_models %}
@@ -33,13 +17,10 @@
                 {% endfor %}
             </select> 
         </div>
-        <button type="submit" class="btn btn-primary">Export Data</button>
-        <div class="mt-3">
-                {% include "alert.html" %}
+          <button type="submit" class="btn btn-success">Export Data</button>
+        <div class="mt-4 p-3">  <!-- Added p-3 for padding around alert -->
+            {% include "alert.html" %}
         </div>
-
+    </form>
 </div>
-
-
-</body>
-</html>
+{% endblock %}
