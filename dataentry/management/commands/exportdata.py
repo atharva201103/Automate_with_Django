@@ -1,35 +1,40 @@
 import csv
 from django.core.management.base import BaseCommand
 from django.apps import apps
-import datetime
 
 class Command(BaseCommand):
-    help="export student data to csv file"
+    help = "Export model data to CSV file"
 
-    def add_arguments(self,parser):
-        parser.add_argument("model_name",type=str,help="name of the model to export data")
+    def add_arguments(self, parser):
+        parser.add_argument("model_name", type=str)
+        parser.add_argument("file_path", type=str)  # <- MUST be here
 
-    def handle(self,*args,**kwargs):
-        model_name=kwargs['model_name'].capitalize()
-        model=None
+    def handle(self, *args, **kwargs):
+        model_name = kwargs["model_name"].capitalize()
+        file_path = kwargs["file_path"]              # <- MUST use this path
+
+        model = None
         for app_config in apps.get_app_configs():
             try:
-                model=apps.get_model(app_config.label,model_name)
+                model = apps.get_model(app_config.label, model_name)
                 break
             except LookupError:
-                pass
-        if model is None:
-            self.stderr.write(f"Model {model_name} not found in any installed app")
-            return 
-        else:
-            data=model.objects.all()
-            timestamp=datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            filename=f"Exported_{model_name}_{timestamp}.csv"
-            with open(filename,'w',newline='') as file:
-                writer=csv.writer(file)
-                writer.writerow([field.name for field in model._meta.fields])
-                for obj in data:
-                    writer.writerow([getattr(obj,field.name) for field in model._meta.fields])
-        self.stdout.write(self.style.SUCCESS(f"{model_name} data exported successfully to {filename}"))
+                continue
 
-            
+        if model is None:
+            self.stderr.write(f"Model {model_name} not found")
+            return
+
+        data = model.objects.all()
+        fields = [field.name for field in model._meta.fields]
+
+        # Write CSV to the EXACT file_path created in generate_csv()
+        with open(file_path, "w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(fields)
+            for obj in data:
+                writer.writerow([getattr(obj, field) for field in fields])
+
+        self.stdout.write(self.style.SUCCESS(
+            f"{model_name} data exported successfully to {file_path}"
+        ))

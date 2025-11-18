@@ -5,8 +5,9 @@ from django.conf import settings
 from django.core.management import call_command
 from .management.commands import importdata
 from django.contrib import messages
-from .tasks import celery_import_data
+from .tasks import celery_import_data,celery_export_data
 from .utils import check_csv_file
+from django.http import HttpResponse
 
 # Create your views here.
 def importdata_view(request):
@@ -34,3 +35,20 @@ def importdata_view(request):
            
     context={"all_models":all_models}
     return render(request,"dataentry/importdata.html",context)
+
+def exportdata_view(request):
+    if request.method == 'POST':
+        model_name = request.POST.get("model_name")
+        celery_export_data.delay(model_name)
+
+        messages.success(request, "Your data is being exported, you will be notified once it is done.")
+        return redirect('exportdata')
+
+    # GET request (load dropdown)
+    all_models = get_all_custom_models()
+    
+    context = {
+        "all_models": all_models
+    }
+
+    return render(request, "dataentry/exportdata.html", context)

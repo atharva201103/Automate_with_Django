@@ -4,6 +4,8 @@ import csv
 from django.db import DataError
 from django.conf import settings
 from django.core.mail import EmailMessage
+from datetime import datetime
+import os
 def get_all_custom_models():
     built_in_models=['Permission','LogEntry','Group','User','ContentType','Uploadfile','Session']
     custom_models=[]
@@ -36,12 +38,23 @@ def check_csv_file(file_path,model_name):
     return model
 
 
-def send_email_notification(mail_subject,message,to_email):
+def send_email_notification(mail_subject,message,to_email,attachment=None):
     try:
         from_email=settings.DEFAULT_FROM_EMAIL
         mail=EmailMessage(mail_subject,message,from_email,to=[to_email])
+        if attachment is not None:
+            mail.attach_file(attachment)
         mail.send()
     except Exception as e:
         raise e
 
 
+def generate_csv(model_name):
+    timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    export_dir = os.path.join(settings.MEDIA_ROOT, "exported_data")
+    os.makedirs(export_dir, exist_ok=True)
+
+    file_name = f"exported_{model_name}_data_{timestamp}.csv"
+    file_path = os.path.join(export_dir, file_name)
+
+    return file_path
