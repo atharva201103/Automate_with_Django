@@ -23,9 +23,12 @@ from django.conf import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("",home_page,name="home"),
+    path("home/",home_page,name="home"),
     path("",include("dataentry.urls")),
-    path("celery-task/",celery_task_test)
+    path("register/",register,name="register"),
+    path("",login_view,name="login"),
+    path('logout/',logout_view,name="logout"),
+    path("celery-task/",celery_task_test),
 ]
 if settings.DEBUG:
     urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
