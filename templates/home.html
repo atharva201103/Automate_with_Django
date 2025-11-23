@@ -6,5 +6,19 @@
     Automate the Boring Stuff with Django" is a project-based course to build various tools using the Django framework to automate By leveraging Django's capabilities, 
     users can streamline their workflows, saving time and enhancing productivity.
   </p> {% endcomment %}
+  <ul class="nav justify-content-center gap-3 my-4">
+    <li class="nav-item">
+      <a class="btn btn-primary" href="{% url 'importdata' %}">Import Data</a>
+    </li>
+    <li class="nav-item">
+      <a class="btn btn-primary" href="{% url 'exportdata' %}">Export Data</a>
+    </li>
+    <li class="nav-item">
+      <a class="btn btn-primary" href="{% url 'send_email' %}">Send Email</a>
+    </li>
+    <li class="nav-item">
+      <a class="btn btn-primary" href="{% url 'stock' %}">Stock Analysis</a>
+    </li>
+  </ul>
 </div>
 {% endblock %}

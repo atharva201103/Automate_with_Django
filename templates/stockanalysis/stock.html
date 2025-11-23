@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    .select2-container .select2-selection--single {
+        height: 40px !important;
+        
+    }
+</style>
+<div class="container mt-4">
+    <div class="card p-4 shadow-sm mx-auto" style="max-width: 650px;">
+        <h2 class="text-center mb-3">Stock Market Analysis</h2>
+
+        <form action="{% url 'stock' %}" method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="text-left mt-3">
+                <button type="submit" class="btn btn-success px-4">Get-Info</button>
+            </div>
+        </form>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        {{ form.media }}
+    </div>
+</div>
+{% endblock %}

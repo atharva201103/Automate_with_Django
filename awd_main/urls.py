@@ -28,7 +28,9 @@ urlpatterns = [
     path("register/",register,name="register"),
     path("",login_view,name="login"),
     path('logout/',logout_view,name="logout"),
+    path('email/',include("emails.urls")),
     path("celery-task/",celery_task_test),
+    path('stockanalysis/',include('stockanalysis.urls')),
 ]
 if settings.DEBUG:
     urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

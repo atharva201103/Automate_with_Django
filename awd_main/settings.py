@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'dal',
+    'dal_select2',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -42,6 +44,11 @@ INSTALLED_APPS = [
     "upload",
     'crispy_forms',
     "crispy_bootstrap5",
+    "emails",
+    'ckeditor',
+    'anymail',
+    'stockanalysis',
+    
 
 
 ]
@@ -146,12 +153,20 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 #email configuration
-EMAIL_HOST=config('EMAIL_HOST')
-EMAIL_PORT=config('EMAIL_PORT')
-EMAIL_HOST_USER=config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD=config('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS=True
+# EMAIL_HOST=config('EMAIL_HOST')
+# EMAIL_PORT=config('EMAIL_PORT')
+# EMAIL_HOST_USER=config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD=config('EMAIL_HOST_PASSWORD')
+# EMAIL_USE_TLS=True
 DEFAULT_FROM_EMAIL='Automate with django <atharvajawalkar11@gmail.com>'
 DEFAULT_TO_EMAIL='atharvajawalkar20@gmail.com'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+
+ANYMAIL = {
+    # (exact settings here depend on your ESP...)
+    "SENDINBLUE_API_KEY": config("SENDINBLUE"),
+    
+}

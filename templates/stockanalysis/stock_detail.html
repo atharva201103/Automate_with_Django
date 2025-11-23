@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card p-4 shadow-sm mx-auto" style="max-width: 650px;">
+        <h2 class="text-center mb-3">Stock Detail</h2>
+        <table class="table table-bordered">
+            <tr>
+                <th>Stock</th>
+                <td>{{ stock_data.stock.name }} ({{ stock_data.stock.symbol }})</td>
+            </tr>
+            <tr>
+                <th>Current Price</th>
+                <td>{{ stock_data.current_price }}</td>
+            </tr>
+            <tr>
+                <th>Previous Close</th>
+                <td>{{ stock_data.previous_close }}</td>
+            </tr>
+            <tr>
+                <th>Percentage Changed</th>
+                <td>{{ stock_data.percentage_changed }}%</td>
+            </tr>
+            <tr>
+                <th>52 Week High</th>
+                <td>{{ stock_data.week_52_high }}</td>
+            </tr>
+            <tr>
+                <th>52 Week Low</th>
+                <td>{{ stock_data.week_52_low }}</td>
+            </tr>
+            <tr>
+                <th>Market Cap</th>
+                <td>{{ stock_data.market_cap }}</td>
+            </tr>
+            <tr>
+                <th>PE Ratio</th>
+                <td>{{ stock_data.pe_ratio }}</td>
+            </tr>
+            <tr>
+                <th>Dividend Yield</th>
+                <td>{{ stock_data.dividend_yield }}</td>  
+            </tr>
+            <tr>
+                <th>Volume</th>
+                <td>{{ stock_data.volume }}</td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
