@@ -14,16 +14,37 @@ def celery_task():
     return "Email Send Successfully"
 
 @app.task
-def celery_import_data(absolute_path,model_name):
-    try:
-        call_command('importdata',absolute_path,model_name)    
-    except Exception as e:
-        raise 
-    mail_subject='Imported Data Completed'
-    message='Data Imported Sucessfully'
-    to_email=settings.DEFAULT_TO_EMAIL
-    send_email_notification(mail_subject,message,to_email)
+def celery_import_data(csv_content, model_name):
+    import csv, io
+    from django.apps import apps
+
+    reader = csv.DictReader(io.StringIO(csv_content))
+
+    # find model across ALL apps
+    Model = None
+    for app_config in apps.get_app_configs():
+        try:
+            Model = app_config.get_model(model_name)
+            break
+        except LookupError:
+            continue
+
+    if Model is None:
+        raise ValueError(f"Model '{model_name}' not found")
+
+    # insert rows
+    for row in reader:
+        Model.objects.create(**row)
+
+    # send email
+    mail_subject = 'Imported Data Completed'
+    message = 'Data Imported Successfully'
+    to_email = settings.DEFAULT_TO_EMAIL
+    send_email_notification(mail_subject, message, to_email)
+
     return "Data Imported successfully"
+
+
 
 @app.task
 def celery_export_data(model_name):

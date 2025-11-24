@@ -11,30 +11,35 @@ from django.http import HttpResponse
 
 # Create your views here.
 def importdata_view(request):
-    all_models=get_all_custom_models()
-    if request.method=="POST":
-        file_path=request.FILES.get("filepath")
-        model_name=request.POST.get("model_name")
-        if file_path and model_name:
-            upload=Uploadfile.objects.create(upload_file=file_path,model_name=model_name)
-            #construct absolute path
-            relative_path=str(upload.upload_file.url)
-            base_url=str(settings.BASE_DIR)
-            absolute_path=base_url+relative_path
-            #csv header_check
+    all_models = get_all_custom_models()
+
+    if request.method == "POST":
+        csv_file = request.FILES.get("filepath")
+        model_name = request.POST.get("model_name")
+
+        if csv_file and model_name:
+
+            import io, csv
+
+            # read CSV in memory
+            decoded = csv_file.read().decode('utf-8')
+
+            # validate CSV header using your existing function
             try:
-                check_csv_file(absolute_path,model_name)
+                check_csv_file(csv_file.name, model_name)
             except Exception as e:
-                messages.error(request,str(e))
+                messages.error(request, str(e))
                 return redirect('importdata')
 
+            # send CSV content to Celery
+            celery_import_data.delay(decoded, model_name)
 
-            #trigger the command
-            celery_import_data.delay(absolute_path,model_name)
-            messages.success(request,"Your data is being import, You will be notified once it is done")
-           
-    context={"all_models":all_models}
-    return render(request,"dataentry/importdata.html",context)
+            messages.success(request, "Your data is being imported, you will be notified once it is done")
+            return redirect('importdata')
+
+    context = {"all_models": all_models}
+    return render(request, "dataentry/importdata.html", context)
+
 
 def exportdata_view(request):
     if request.method == 'POST':
