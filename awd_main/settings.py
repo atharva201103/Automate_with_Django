@@ -26,7 +26,15 @@ SECRET_KEY=config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG=config('DEBUG',default=False,cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'automate-with-django-1.onrender.com',
+    'localhost',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://automate-with-django-1.onrender.com',
+]
+
 
 
 # Application definition
